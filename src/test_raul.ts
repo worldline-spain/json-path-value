@@ -1,13 +1,13 @@
 
 class Tupla {
 
-    public constructor(private path: string, private value: string, private type: string, private diff: string) { }
+    public constructor(private path: string, private value: any, private type: string, private diff: string) { }
 
     public getPath(): string {
         return this.path;
     }
 
-    public getValue(): string {
+    public getValue(): any {
         return this.value;
     }
 
@@ -72,7 +72,7 @@ class Marshall {
                 json[attr[pos - 1]].push(tuplas[index_tuplas].getValue());
             }
             else {
-                json[attr[pos - 1]] = this.doArrayRecursivity(json[attr[pos - 1]], attr, pos++, tuplas, index_tuplas);
+                json[attr[pos - 1]] = this.doArrayRecursivity(json[attr[pos - 1]], attr, pos + 1, tuplas, index_tuplas);
             }
         }
         return json;
@@ -157,12 +157,26 @@ class Marshall {
                     else {
                         if (typeof objb[i] === "number") tuplas.push(new Tupla(path + '[' + i + ']', objb[i].toString(), "number", 'Deleted'));
                         else if (typeof objb[i] === "string") tuplas.push(new Tupla(path + '[' + i + ']', objb[i], "string", "Deleted"));
+                        else if (objb[i] instanceof Array) {
+                            tuplas.push(new Tupla(path + '[' + i + ']', objb[i], "Array", "Deleted"));
+                        }
                         else if (typeof objb[i] === "object") {
-                            //
+                            tuplas.push(new Tupla(path + '[' + i + ']', objb[i], "Object", "Deleted"));
                         } else if (typeof obja === "boolean") {
                             tuplas.push(new Tupla(path + '[' + i + ']', objb[i].toString(), "boolean", 'Deleted'));
                         }
                     }
+                }
+            }
+            else {
+                if (typeof obja === "number") {
+                    tuplas.push(new Tupla(path, obja.toString(), "number", 'Modified'));
+                } else if (typeof obja === "string") {
+                    tuplas.push(new Tupla(path, obja, "string", 'Modified'));
+                } else if (typeof obja === "boolean") {
+                    tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Modified'));
+                } else if (typeof obja === "object") {
+                    tuplas.push(new Tupla(path, obja, "object", 'Modified'));
                 }
             }
         }
@@ -191,11 +205,11 @@ class Marshall {
                 if (obja && objb != obja) {
                     if (typeof obja === "number") tuplas.push(new Tupla(path, obja.toString(), "number", 'Modified'));
                     else if (typeof obja === "string") tuplas.push(new Tupla(path, obja, "string", "Modified"));
+                    else if (obja instanceof Array) {
+                        tuplas.push(new Tupla(path, obja, "Array", "Modified"));
+                    }
                     else if (typeof obja === "object") {
-                        for (let x in obja) {
-                            if (path != "") tuplas = this.checkbefaft(objb, obja[x], path + '.' + x, tuplas);
-                            else if (path == "") tuplas = this.checkbefaft(objb, obja[x], x, tuplas);
-                        }
+                        tuplas.push(new Tupla(path, obja, "object", "Modified"));
                     } else if (typeof obja === "boolean") {
                         tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Modified'));
                     }
@@ -208,11 +222,11 @@ class Marshall {
                 if (obja && objb != obja) {
                     if (typeof obja === "number") tuplas.push(new Tupla(path, obja.toString(), "number", 'Modified'));
                     else if (typeof obja === "string") tuplas.push(new Tupla(path, obja, "string", "Modified"));
+                    else if (obja instanceof Array) {
+                        tuplas.push(new Tupla(path, obja, "Array", "Modified"));
+                    }
                     else if (typeof obja === "object") {
-                        for (let x in obja) {
-                            if (path != "") tuplas = this.checkbefaft(objb, obja[x], path + '.' + x, tuplas);
-                            else if (path == "") tuplas = this.checkbefaft(objb, obja[x], x, tuplas);
-                        }
+                        tuplas.push(new Tupla(path, obja, "object", "Modified"));
                     } else if (typeof obja === "boolean") {
                         tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Modified'));
                     }
@@ -225,11 +239,11 @@ class Marshall {
                 if (obja && objb != obja) {
                     if (typeof obja === "number") tuplas.push(new Tupla(path, obja.toString(), "number", 'Modified'));
                     else if (typeof obja === "string") tuplas.push(new Tupla(path, obja, "string", "Modified"));
+                    else if (obja instanceof Array) {
+                        tuplas.push(new Tupla(path, obja, "Array", "Modified"));
+                    }
                     else if (typeof obja === "object") {
-                        for (let x in obja) {
-                            if (path != "") tuplas = this.checkbefaft(objb, obja[x], path + '.' + x, tuplas);
-                            else if (path == "") tuplas = this.checkbefaft(objb, obja[x], x, tuplas);
-                        }
+                        tuplas.push(new Tupla(path, obja, "object", "Modified"));
                     } else if (typeof obja === "boolean") {
                         tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Modified'));
                     }
@@ -244,20 +258,50 @@ class Marshall {
 
     public checkaftbef(objb: any, obja: any, path: string, tuplas: Tupla[]): Tupla[] {
         if (obja instanceof Array) {
-            for (let i = 0; i < obja.length; ++i) {
+            if (objb instanceof Array) {
+                for (let i = 0; i < obja.length; ++i) {
+                    if (i >= objb.length) {
+                        if (typeof obja[i] === "number") tuplas.push(new Tupla(path + '[' + i + ']', obja[i].toString(), "number", 'Added'));
+                        else if (typeof obja[i] === "string") tuplas.push(new Tupla(path + '[' + i + ']', obja[i], "string", "Added"));
+                        else if (obja[i] instanceof Array) {
+                            tuplas.push(new Tupla(path + '[' + i + ']', obja[i], "Array", 'Added'));
+                        }
+                        else if (typeof obja[i] === "boolean") {
+                            tuplas.push(new Tupla(path + '[' + i + ']', obja[i].toString(), "boolean", 'Added'));
+                        }
+                        else if (typeof obja[i] === "object") {
+                            tuplas.push(new Tupla(path + '[' + i + ']', obja[i], "object", "Added"));
+                        }
+                    }
+                    else {
+                        if (obja[i] != objb[i]) {
+                            if (path != "") tuplas = this.checkaftbef(objb[i], obja[i], path + '[' + i + ']', tuplas);
+                        }
+                    }
+                }
             }
         }
         else if (typeof obja === "object") {
             if (obja instanceof Date) {
             }
             else {
-                for (let x in obja) {
-                    if (!objb[x]) {
-                        if (path != "") {
-                            tuplas = this.checkaftbef("", obja[x], path + '.' + x, tuplas);
+                if (typeof objb === "object") {
+                    for (let x in obja) {
+                        if (!objb[x]) {
+                            if (path != "") {
+                                tuplas = this.checkaftbef("", obja[x], path + '.' + x, tuplas);
+                            }
+                            else {
+                                tuplas = this.checkaftbef("", obja[x], x, tuplas);
+                            }
                         }
-                        else {
-                            tuplas = this.checkaftbef("", obja[x], x, tuplas);
+                        else if (obja[x] != objb[x]) {
+                            if (path != "") {
+                                tuplas = this.checkaftbef(objb[x], obja[x], path + '.' + x, tuplas);
+                            }
+                            else {
+                                tuplas = this.checkaftbef(objb[x], obja[x], x, tuplas);
+                            }
                         }
                     }
                 }
@@ -278,6 +322,12 @@ class Marshall {
                 if (!objb) {
                     tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Added'));
                 }
+            } 
+            else if (obja instanceof Array) {
+                tuplas.push(new Tupla(path, obja, "Array", "Added"));
+            } 
+            else if (typeof obja === "object") {
+                tuplas.push(new Tupla(path, obja, "Object", "Added"));
             }
         }
 
@@ -313,6 +363,68 @@ class Marshall {
                 }
             ]
         };
+
+        /* let example16 = {
+            "a" : [
+                [
+                    "Ford",
+                    [
+                        "Toyota"
+                    ]
+                ],
+            ]
+        }
+
+        let example17 = {
+            "a" : [
+                [
+                    "Ford",
+                    [
+                        "Toyota",
+                        [
+                            [
+                                [
+                                    "Array"
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+            ]
+        } */
+
+        /* let example16 = {
+            "a": "cosa",
+            "b": [1, 3, 4],
+            "c": {
+                "ce": 2,
+                "cr": [
+                    {
+                        "primo": "no",
+                        "edad": 24
+                    },
+                    24,
+                    ["s", "t", "r"]
+                ]
+            }
+        }
+
+        let example17 = {
+            "a": "Cosa",
+            "b": 2,
+            "c": {
+                "ce": 6,
+                "cr": [
+                    {
+                        "primo": "no pasa mada 'premo'",
+                        "edad": ["2", "4"]
+                    },
+                    {
+                        "edad": 24
+                    }
+                ]
+            } 
+        }*/
 
         tuplas3 = this.checkbefaft(/* marshalled, marshalled2 */example16, example17, "", []);
         tuplas3 = this.checkaftbef(/* marshalled, marshalled2 */example16, example17, "", tuplas3);
@@ -501,15 +613,48 @@ let example16 = {
     "b": [
         [
             "Ford",
-            "Nissan"
+            "Nissan",
+        ],
+        [
+            "Toyota",
+            "Seat"
         ],
         "ey"
     ]
 };
 
+let example17 = {
+    "a": [
+        [
+            "Ford",
+            [
+                "Toyota"
+            ]
+        ],
+    ]
+}
+
+let example18 = {
+    "a": [
+        [
+            "Ford",
+            [
+                "Toyota",
+                [
+                    [
+                        [
+                            "Array"
+                        ]
+                    ]
+                ]
+            ]
+        ],
+    ]
+}
+
 const marshall = new Marshall(new Array<Tupla>());
 
-const marshalled2 = marshall.marshall(example16, "", []);
+const marshalled2 = marshall.marshall(example18, "", []);
 
 console.log(marshalled2);
 
@@ -517,10 +662,6 @@ const resultObj = marshall.unMarshall(marshalled2);
 
 console.log(resultObj);
 
-/* const example12m = marshall.marshall(example12, "", []);
-const example13m = marshall.marshall(example15, "", []); */
-
-
-const result = marshall.compare2JSONpath(/* example12m, example13m */);
+const result = marshall.compare2JSONpath();
 
 console.log(result);
