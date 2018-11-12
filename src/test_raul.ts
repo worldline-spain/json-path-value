@@ -1,3 +1,29 @@
+var fs = require('fs');
+var example1 = JSON.parse(fs.readFileSync('src/json/example1.json', 'utf8'));
+var example2 = JSON.parse(fs.readFileSync('src/json/example2.json', 'utf8'));
+var example3 = JSON.parse(fs.readFileSync('src/json/example3.json', 'utf8'));
+var example4 = JSON.parse(fs.readFileSync('src/json/example4.json', 'utf8'));
+var example5 = JSON.parse(fs.readFileSync('src/json/example5.json', 'utf8'));
+var example6 = JSON.parse(fs.readFileSync('src/json/example6.json', 'utf8'));
+var example7 = JSON.parse(fs.readFileSync('src/json/example7.json', 'utf8'));
+var example8 = JSON.parse(fs.readFileSync('src/json/example8.json', 'utf8'));
+var example9 = JSON.parse(fs.readFileSync('src/json/example9.json', 'utf8'));
+var example10 = JSON.parse(fs.readFileSync('src/json/example10.json', 'utf8'));
+var example11 = JSON.parse(fs.readFileSync('src/json/example11.json', 'utf8'));
+var example12 = JSON.parse(fs.readFileSync('src/json/example12.json', 'utf8'));
+var example13 = JSON.parse(fs.readFileSync('src/json/example13.json', 'utf8'));
+var example14 = JSON.parse(fs.readFileSync('src/json/example14.json', 'utf8'));
+var example15 = JSON.parse(fs.readFileSync('src/json/example15.json', 'utf8'));
+var example16 = JSON.parse(fs.readFileSync('src/json/example16.json', 'utf8'));
+var example17 = JSON.parse(fs.readFileSync('src/json/example17.json', 'utf8'));
+var example18 = JSON.parse(fs.readFileSync('src/json/example18.json', 'utf8'));
+var example19 = JSON.parse(fs.readFileSync('src/json/example19.json', 'utf8'));
+var example20 = JSON.parse(fs.readFileSync('src/json/example20.json', 'utf8'));
+var example21 = JSON.parse(fs.readFileSync('src/json/example21.json', 'utf8'));
+var example22 = JSON.parse(fs.readFileSync('src/json/example22.json', 'utf8'));
+
+
+
 
 class Tupla {
 
@@ -78,6 +104,37 @@ class Marshall {
         return json;
     }
 
+    public doArrayAndObjectRecursivity(json: any, jsonpath: any[], posjsonpath: number, attr: any[], pos: number, tuplas: Tupla[], index_tuplas: number): any {
+        if (pos <= attr.length && posjsonpath != jsonpath.length - 1) {
+            if (pos == attr.length - 1) {
+                if (!json[attr[pos - 1]][attr[pos]]) json[attr[pos - 1]].push({});
+                var attr2 = [];
+                if (jsonpath[posjsonpath + 1].includes('[')) {
+                    attr2 = jsonpath[posjsonpath + 1].split('[');
+                    for (let i = 1; i < attr2.length; ++i) {
+                        attr2[i] = parseInt(attr2[i].substring(0, attr2[i].length - 1));
+                    }
+                    json[attr[pos - 1]][attr[pos]] = this.doArrayAndObjectRecursivity(json[attr[pos - 1]][attr[pos]], jsonpath, posjsonpath + 1, attr2, 0, tuplas, index_tuplas);
+                }
+            }
+            else {
+                json[attr[pos - 1]] = this.doArrayAndObjectRecursivity(json[attr[pos - 1]], jsonpath, posjsonpath, attr, pos + 1, tuplas, index_tuplas);
+            }
+        }
+        else if (pos <= attr.length && posjsonpath == jsonpath.length - 1) {
+            if (!json[attr[pos]]) {
+                if (attr && pos != attr.length - 1) {
+                    json[attr[pos]] = [];
+                    json[attr[pos]] = this.doArrayAndObjectRecursivity(json[attr[0]], jsonpath, posjsonpath, attr, pos + 1, tuplas, index_tuplas);
+                }
+                else if (attr && pos == attr.length - 1) {
+                    json.push(tuplas[index_tuplas].getValue());
+                }
+            }
+        }
+        return json;
+    }
+
     public doJsonRecursivity(jsonpath: any[], json: any, position: number, index_tuplas: number, tuplas: Tupla[]): any {
         var attr;
         if (jsonpath[position].includes('[')) {
@@ -134,7 +191,11 @@ class Marshall {
             json[attr[0]][attr[1]] = this.doJsonRecursivity(jsonpath, json[attr[0]][attr[1]], position + 1, index_tuplas, tuplas);
         }
         else if (attr && position != jsonpath.length - 1 && json[attr[0]] && json[attr[0]][attr[1]]) {
-            json[attr[0]][attr[1]] = this.doJsonRecursivity(jsonpath, json[attr[0]][attr[1]], position + 1, index_tuplas, tuplas);
+            if (attr.length > 2) {
+                json[attr[0]][attr[1]] = this.doArrayAndObjectRecursivity(json[attr[0]][attr[1]], jsonpath, position, attr, 3, tuplas, index_tuplas);
+            } else {
+                json[attr[0]][attr[1]] = this.doJsonRecursivity(jsonpath, json[attr[0]][attr[1]], position + 1, index_tuplas, tuplas);
+            }
         }
         return json;
     }
@@ -182,6 +243,21 @@ class Marshall {
         }
         else if (typeof objb === "object") {
             if (objb instanceof Date) {
+                if (!obja) {
+                    tuplas.push(new Tupla(path, obja.toString(), "Date", 'Deleted'));
+                } else {
+                    if (objb != obja) {
+                        if (typeof obja === "number") {
+                            tuplas.push(new Tupla(path, obja.toString(), "number", 'Modified'));
+                        } else if (typeof obja === "string") {
+                            tuplas.push(new Tupla(path, obja, "string", 'Modified'));
+                        } else if (typeof obja === "boolean") {
+                            tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Modified'));
+                        } else if (typeof obja === "object") {
+                            tuplas.push(new Tupla(path, obja, "object", 'Modified'));
+                        }
+                    }
+                }
             }
             else {
                 for (let x in objb) {
@@ -283,6 +359,9 @@ class Marshall {
         }
         else if (typeof obja === "object") {
             if (obja instanceof Date) {
+                if (!objb) {
+                    tuplas.push(new Tupla(path, obja.toString(), "Date", 'Added'));
+                }
             }
             else {
                 if (typeof objb === "object") {
@@ -322,10 +401,10 @@ class Marshall {
                 if (!objb) {
                     tuplas.push(new Tupla(path, obja.toString(), "boolean", 'Added'));
                 }
-            } 
+            }
             else if (obja instanceof Array) {
                 tuplas.push(new Tupla(path, obja, "Array", "Added"));
-            } 
+            }
             else if (typeof obja === "object") {
                 tuplas.push(new Tupla(path, obja, "Object", "Added"));
             }
@@ -334,327 +413,20 @@ class Marshall {
         return tuplas;
     }
 
-    public compare2JSONpath(/* tuplasbefore: Tupla[], tuplasafter: Tupla[] */): Tupla[] {
-        let tuplas3: Tupla[] = [];
+    public compare2JSONpath(): Tupla[] {
+        let tuplas3: Tupla[] = [];       
 
-        //let marshall = new Marshall(new Array<Tupla>());
-        //const marshalled = marshall.unMarshall(tuplasbefore);
-        //const marshalled2 = marshall.unMarshall(tuplasafter);
-
-        let example16 = {
-            "a": "a",
-            "b": [
-                [
-                    "Ford",
-                    "Nissan"
-                ],
-                "ey"
-            ]
-        };
-
-        let example17 = {
-            "b": [
-                [
-                    "Toyota",
-                    "Seat"
-                ],
-                {
-                    "g": "g"
-                }
-            ]
-        };
-
-        /* let example16 = {
-            "a" : [
-                [
-                    "Ford",
-                    [
-                        "Toyota"
-                    ]
-                ],
-            ]
-        }
-
-        let example17 = {
-            "a" : [
-                [
-                    "Ford",
-                    [
-                        "Toyota",
-                        [
-                            [
-                                [
-                                    "Array"
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-            ]
-        } */
-
-        /* let example16 = {
-            "a": "cosa",
-            "b": [1, 3, 4],
-            "c": {
-                "ce": 2,
-                "cr": [
-                    {
-                        "primo": "no",
-                        "edad": 24
-                    },
-                    24,
-                    ["s", "t", "r"]
-                ]
-            }
-        }
-
-        let example17 = {
-            "a": "Cosa",
-            "b": 2,
-            "c": {
-                "ce": 6,
-                "cr": [
-                    {
-                        "primo": "no pasa mada 'premo'",
-                        "edad": ["2", "4"]
-                    },
-                    {
-                        "edad": 24
-                    }
-                ]
-            } 
-        }*/
-
-        tuplas3 = this.checkbefaft(/* marshalled, marshalled2 */example16, example17, "", []);
-        tuplas3 = this.checkaftbef(/* marshalled, marshalled2 */example16, example17, "", tuplas3);
+        tuplas3 = this.checkbefaft(example21, example22, "", []);
+        tuplas3 = this.checkaftbef(example21, example22, "", tuplas3);
 
         return tuplas3;
     }
 
 }
 
-let example1 = {
-    "a": {
-        "b": "b",
-        "c": "c"
-    },
-    "x": {
-        "x": "x"
-    }
-};
-
-let example2 = {
-    "a": "b"
-};
-
-let example3 = {
-    "date": new Date('2012-04-23T18:25:43.511Z')
-};
-
-let example4 = {
-    "a": {
-        "c": false,
-        "d": true
-    },
-    "b": true
-};
-
-let example5 = {
-    "e": 123,
-    "f": {
-        "g": 1,
-        "h": 2,
-        "i": 3
-    }
-};
-
-let example6 = {
-    "a": "a",
-    "b": {
-        "c": {
-            "d": "d",
-            "e": "e"
-        },
-        "f": "f"
-    }
-}
-
-let example7 = {
-    "a": "a",
-    "b": {
-        "c": {
-            "d": true,
-            "e": false
-        },
-        "f": new Date('2012-04-23T18:25:43.511Z')
-    }
-};
-
-let example8 = {
-    "name": "John",
-    "age": 30,
-    "cars": [
-        "Ford",
-        "BMW",
-        "Fiat",
-        true,
-        {
-            "d": "d",
-            "a": [
-                "e",
-                "f"
-            ]
-        }
-    ]
-};
-
-let example = {
-    "name": "John",
-    "age": 30,
-    "cars": [
-        "Ford",
-        "BMW",
-        "Fiat",
-        true,
-        {
-            "d": "d",
-            "a": [
-                {
-                    "e": "e",
-                    "f": "f"
-                },
-                "b"
-            ]
-        }
-    ]
-};
-
-let example10 = {
-    "name": "John",
-    "age": 30,
-    "cars": [
-        "Ford",
-        "BMW",
-        "Fiat",
-        true,
-        {
-            "d": "d",
-            "a": [
-                {
-                    "e": "e",
-                    "f": "f",
-                    "g": [
-                        "h",
-                        "i"
-                    ]
-                },
-                "b"
-            ]
-        }
-    ]
-};
-
-let example11 = {
-    "name": "John",
-    "age": 30,
-    "cars": [
-        "Ford",
-        "BMW",
-        "Fiat",
-        true,
-        {
-            "d": "d",
-            "a": [
-                [
-                    "c",
-                    "e"
-                ],
-                "b"
-            ]
-        }
-    ]
-};
-
-
-let example12 = {
-    "b": "b",
-    "c": "c",
-    "d": {
-        "e": "e"
-    }
-};
-
-let example13 = {
-    "b": "c",
-    "c": "b",
-    "d": {
-        "e": "f"
-    }
-};
-
-let example14 = {
-    "b": "c",
-    "d": {
-        "e": "f"
-    }
-};
-
-let example15 = {
-    "b": "c",
-    "g": "g",
-    "d": {
-        "e": "f"
-    }
-};
-
-let example16 = {
-    "a": "a",
-    "b": [
-        [
-            "Ford",
-            "Nissan",
-        ],
-        [
-            "Toyota",
-            "Seat"
-        ],
-        "ey"
-    ]
-};
-
-let example17 = {
-    "a": [
-        [
-            "Ford",
-            [
-                "Toyota"
-            ]
-        ],
-    ]
-}
-
-let example18 = {
-    "a": [
-        [
-            "Ford",
-            [
-                "Toyota",
-                [
-                    [
-                        [
-                            "Array"
-                        ]
-                    ]
-                ]
-            ]
-        ],
-    ]
-}
-
 const marshall = new Marshall(new Array<Tupla>());
 
-const marshalled2 = marshall.marshall(example18, "", []);
+const marshalled2 = marshall.marshall(example1, "", []);
 
 console.log(marshalled2);
 
