@@ -1,21 +1,13 @@
 import { JsonPath,JsonPathPair } from '../index';
-const jsonData = {
-  "a": {
-      "b": "b",
-      "c": "c"
-  },
-  "x": {
-      "x": "x"
-  }
-};
+import * as jsonData1 from './json/example1.json';
 
 test('My Test', () => {
-  
   const jsonPath = new JsonPath();
-
-  const marshalledObject = jsonPath.marshall(jsonData, "", []);
+  const marshalledObject = jsonPath.marshall(jsonData1, "", []);
   const unMarshalledObject = jsonPath.unMarshall(marshalledObject);
-  const result = jsonPath.compareJsonPath(jsonData,unMarshalledObject );
+  const result =jsonPath.compareJsonPath(jsonData1,unMarshalledObject );
   expect(result.length).toBe(0);
 
 });
+
+
