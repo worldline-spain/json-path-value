@@ -1,4 +1,4 @@
-/* var fs = require('fs');
+ var fs = require('fs');
 var example1 = JSON.parse(fs.readFileSync('src/json/example1.json', 'utf8'));
 var example2 = JSON.parse(fs.readFileSync('src/json/example2.json', 'utf8'));
 var example3 = JSON.parse(fs.readFileSync('src/json/example3.json', 'utf8'));
@@ -22,7 +22,7 @@ var example20 = JSON.parse(fs.readFileSync('src/json/example20.json', 'utf8'));
 var example21 = JSON.parse(fs.readFileSync('src/json/example21.json', 'utf8'));
 var example22 = JSON.parse(fs.readFileSync('src/json/example22.json', 'utf8'));
 var example23 = JSON.parse(fs.readFileSync('src/json/example23.json', 'utf8'));
-var example24; */
+var example24 = JSON.parse(fs.readFileSync('src/json/example24.json', 'utf8'));
 
 export class Tupla {
 
@@ -67,9 +67,12 @@ export class Marshall {
             }
             else {
                 for (let x in obj) {
-                    if (path != "") tuplas = this.marshall(obj[x], path + '.' + x, tuplas);
-                    else
-                        tuplas = this.marshall(obj[x], x, tuplas);
+                    // Revisar
+                    if (x != "") {
+                        if (path != "") tuplas = this.marshall(obj[x], path + '.' + x, tuplas);
+                        else
+                            tuplas = this.marshall(obj[x], x, tuplas);
+                    }
                 }
             }
         }
@@ -143,7 +146,7 @@ export class Marshall {
             }
         }
         if (!attr && position == jsonpath.length - 1 && !json[jsonpath[position]]) {
-            if (tuplas[index_tuplas].getType() == "string") json[jsonpath[position]] = tuplas[index_tuplas].getValue();
+            if (tuplas[index_tuplas].getType() == "string" && tuplas[index_tuplas].getValue() != "") json[jsonpath[position]] = tuplas[index_tuplas].getValue();
             else if (tuplas[index_tuplas].getType() == "number") json[jsonpath[position]] = parseInt(tuplas[index_tuplas].getValue(), 10);
             else if (tuplas[index_tuplas].getType() == "boolean") json[jsonpath[position]] = (tuplas[index_tuplas].getValue() == "true");
             else if (tuplas[index_tuplas].getType() == "Date") json[jsonpath[position]] = new Date(tuplas[index_tuplas].getValue());
@@ -422,8 +425,8 @@ export class Marshall {
     }
 
 }
-/* 
-const jsonld = require('jsonld');
+
+/* const jsonld = require('jsonld');
 
 var doc = {
     "http://schema.org/name": "Manu Sporny",
@@ -455,11 +458,11 @@ jsonld.compact(doc, context, function (err: any, compacted: any) {
 
     const result = marshall.compare2JSONpath(example24, example24);
 
-});
+}); */
 
 const marshall = new Marshall();
 
-const marshalled2 = marshall.marshall(example1, "", []);
+const marshalled2 = marshall.marshall(example24, "", []);
 
 console.log(marshalled2);
 
@@ -469,4 +472,4 @@ console.log(resultObj);
 
 const result = marshall.compare2JSONpath(example21, example23);
 
-console.log(result); */
+console.log(result); 
