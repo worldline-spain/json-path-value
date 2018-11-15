@@ -68,7 +68,7 @@ test('Array compare test', () => {
 test('Array compare test 2', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData21, jsonData22);
-  expect(result.length).toBe(1);
+  expect(result.length).toBe(7);
 
 });
 
