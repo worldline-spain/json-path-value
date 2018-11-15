@@ -1,6 +1,6 @@
 {
   "name": "json-path-value",
-  "version": "0.0.1-beta2",
+  "version": "0.0.1-beta3",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
