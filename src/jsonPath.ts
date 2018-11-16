@@ -137,6 +137,9 @@ export class JsonPath {
             else if (JsonPathPairs[index_JsonPathPairs].getType() == "number") json[jsonpath[position]] = parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10);
             else if (JsonPathPairs[index_JsonPathPairs].getType() == "boolean") json[jsonpath[position]] = (JsonPathPairs[index_JsonPathPairs].getValue() == "true");
             else if (JsonPathPairs[index_JsonPathPairs].getType() == "Date") json[jsonpath[position]] = new Date(JsonPathPairs[index_JsonPathPairs].getValue());
+            else {
+                json[jsonpath[position]] = JsonPathPairs[index_JsonPathPairs].getValue();
+            }
         }
         else if (!attr && position != jsonpath.length - 1 && !json[jsonpath[position]]) {
             json[jsonpath[position]] = {};
@@ -156,6 +159,9 @@ export class JsonPath {
                 else if (JsonPathPairs[index_JsonPathPairs].getType() == "number") json[attr[0]].push(parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10));
                 else if (JsonPathPairs[index_JsonPathPairs].getType() == "boolean") json[attr[0]].push((JsonPathPairs[index_JsonPathPairs].getValue() == "true"));
                 else if (JsonPathPairs[index_JsonPathPairs].getType() == "Date") json[attr[0]].push(new Date(JsonPathPairs[index_JsonPathPairs].getValue()));
+                else {
+                    json[attr[0]].push(JsonPathPairs[index_JsonPathPairs].getValue());
+                }
             }
         }
         else if (attr && position != jsonpath.length - 1 && !json[attr[0]]) {

@@ -22,6 +22,7 @@ import * as jsonData20 from './json/example20.json';
 import * as jsonData21 from './json/example21.json';
 import * as jsonData22 from './json/example22.json';
 import * as jsonData23 from './json/example23.json';
+import * as jsonData24 from './json/example24.json';
 
 
 test('My Test', () => {
@@ -69,6 +70,15 @@ test('Array compare test 2', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData21, jsonData22);
   expect(result.length).toBe(7);
+
+});
+
+test('Array unMarshall', () => {
+  const jsonPath = new JsonPath();
+  const marshalled = jsonPath.marshall(jsonData24, "", []);
+  const unmarshalled = jsonPath.unMarshall(marshalled);
+  const result = jsonPath.compareJsonPath(jsonData24, unmarshalled);
+  expect(result.length).toBe(0);
 
 });
 

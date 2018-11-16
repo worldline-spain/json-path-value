@@ -104,7 +104,7 @@ const unmarshalled = library.unMarshall(marshalled, "", []);
 This method allows us to compare 2 Json's and the method will return a JsonPathPair[], one row for each difference between the 2 Json (Addition, Modification or Deletion) and the current value.
 
 ```console
-public  compare2JSONpath(before:  any, after:  any):  JsonPathPair[]
+public  compareJsonPath(before:  any, after:  any):  JsonPathPair[]
 ```
 
 Example:
@@ -130,7 +130,7 @@ let after = {
 	}
 }
 
-const compared = library.compare2JSON(before, after);
+const compared = library.compareJsonPath(before, after);
 
 /*
 COMPARED
