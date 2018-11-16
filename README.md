@@ -6,6 +6,7 @@ It is a library that makes easier working with Json and JsonPath. It provides 3 
 1) Json to JsonPath
 2) JsonPath to Json
 3) Comparing 2 Json's
+
 ## Functionalities
 ### Constructor
 ```console
@@ -32,12 +33,11 @@ Example:
 let JsonPathPairs: JsonPathPair[] = [];
 JsonPathPairs.push(new JsonPathPair("a", "a", "string", ''));
 JsonPathPairs.push(new JsonPathPair("b.c", 1, "number", ''));
-
-/*JsonPathPairs
-PATH		VALUE 		TYPE 
-a			"a"			"string"
-b.c			1			"number"*/
 ```
+| PATH   |     VALUE      |  TYPE |
+|----------|:-------------:|------:| 
+| a |  "a"| string |
+| b.c |    1|   number | 
 
 ### Marshall
 This method allows us to transform a Json object "obj" into a JsonPath.
@@ -60,14 +60,13 @@ let json = {
 	}
 }
 const marshalled = library.marshall(json, "", []);
-
-/*MARSHALLED
-PATH		VALUE 		TYPE 
-a			"a"			"string"
-b.c.d		"d"			"string"
-b.c.e		"e"			"string"
-b.f 		"f"			"string"*/
 ```
+| PATH   |     VALUE      |  TYPE |
+|----------|:-------------:|------:| 
+| a |  "a"| string |
+| b.c.d |    "d" |   string | 
+| b.c.e | "e" |    string | 
+| b.f | "f" |   string |
 
 ### UnMarshall
 This method allows us to transform a JsonPath "JsonPathPairs" into a Json object.
@@ -77,14 +76,16 @@ public  unMarshall(JsonPathPairs:  JsonPathPair[]):  any
 ```
 The first param must be the JsonPath in a JsonPathPair[] format.
 Example:
-```console
-/*MARSHALLED
-PATH		VALUE 		TYPE 
-a			"a"			"string"
-b.c.d		"d"			"string"
-b.c.e		"e"			"string"
-b.f 		"f"			"string"*/
 
+const marshalled -->
+| PATH   |     VALUE      |  TYPE |
+|----------|:-------------:|------:| 
+| a |  "a"| string |
+| b.c.d |  "d"  |   string | 
+| b.c.e | "e" |    string | 
+| b.f | "f" |   string |
+
+```console
 const unmarshalled = library.unMarshall(marshalled, "", []);
 
 /*unmarshalled = {
@@ -132,14 +133,13 @@ let after = {
 
 const compared = library.compareJsonPath(before, after);
 
-/*
-COMPARED
-PATH		VALUE 		TYPE 		DIFF
-a			true		"boolean" 	"Modified"
-b.c.e		"e"			"string"	"Deleted"
-b.c.g		"g"			"string"	"Added"
-b.f 		2			"number"	"Modified"
-*/
-
-
 ```
+const compared -->
+
+| PATH   |     VALUE      |  TYPE |  DIFF|
+|----------|:-------------:|------:| ----:|
+| a |  true| boolean | Modified|
+| b.c.e |    "e" |   string | Deleted|
+| b.c.g | "g" |    string | Added |
+| b.f | 2 |   number | Modified |
+
