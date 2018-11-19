@@ -21,6 +21,11 @@ export class JsonPathPair {
 
 export class JsonPath {
 
+    
+    public readonly DIFF_MODIFIED = "Modified";
+    public readonly DIFF_ADDED = "Added";
+    public readonly DIFF_DELETED = "Deleted";
+    
     constructor() { }
 
     public marshall(obj: any, path: string, JsonPathPairs: JsonPathPair[]): JsonPathPair[] {

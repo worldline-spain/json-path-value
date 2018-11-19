@@ -82,6 +82,15 @@ test('Array unMarshall', () => {
 
 });
 
+test('Const diff', () => {
+  const jsonPath = new JsonPath();
+  expect(jsonPath.DIFF_MODIFIED).toBe("Modified");
+  expect(jsonPath.DIFF_ADDED).toBe("Added");
+  expect(jsonPath.DIFF_DELETED).toBe("Deleted");
+
+});
+
+
 
 
 
