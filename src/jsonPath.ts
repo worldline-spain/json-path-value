@@ -21,11 +21,11 @@ export class JsonPathPair {
 
 export class JsonPath {
 
-    
+
     public readonly DIFF_MODIFIED = "Modified";
     public readonly DIFF_ADDED = "Added";
     public readonly DIFF_DELETED = "Deleted";
-    
+
     constructor() { }
 
     public marshall(obj: any, path: string, JsonPathPairs: JsonPathPair[]): JsonPathPair[] {
@@ -74,15 +74,6 @@ export class JsonPath {
             json = this.doJsonRecursivity(splitted, json, 0, i, JsonPathPairs);
         }
         return json;
-    }
-
-    public compareJsonPath(before: any, after: any): JsonPathPair[] {
-        let JsonPathPairs3: JsonPathPair[] = [];
-
-        JsonPathPairs3 = this.checkbefaft(before, after, "", []);
-        JsonPathPairs3 = this.checkaftbef(before, after, "", JsonPathPairs3);
-
-        return JsonPathPairs3;
     }
 
     private doArrayRecursivity(json: any, attr: string[], pos: number, JsonPathPairs: JsonPathPair[], index_JsonPathPairs: number): any {
@@ -201,7 +192,14 @@ export class JsonPath {
     }
 
 
+    public compareJsonPath(before: any, after: any): JsonPathPair[] {
+        let JsonPathPairs3: JsonPathPair[] = [];
 
+        JsonPathPairs3 = this.checkbefaft(before, after, "", []);
+        JsonPathPairs3 = this.checkaftbef(before, after, "", JsonPathPairs3);
+
+        return JsonPathPairs3;
+    }
 
     private checkbefaft(objb: any, obja: any, path: string, JsonPathPairs: JsonPathPair[]): JsonPathPair[] {
         if (objb instanceof Array) {
@@ -212,6 +210,8 @@ export class JsonPath {
                         if (typeof objb[i] === "number") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i].toString(), "number", 'Deleted'));
                         else if (typeof objb[i] === "string") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], "string", "Deleted"));
                         else if (objb[i] instanceof Array) {
+                            // [Error] Compare
+                            //this.checkbefaft(objb[i])
                             JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], "Array", "Deleted"));
                         }
                         else if (typeof objb[i] === "object") {
@@ -275,7 +275,9 @@ export class JsonPath {
                     if (typeof obja === "number") JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
                     else if (typeof obja === "string") JsonPathPairs.push(new JsonPathPair(path, obja, "string", "Modified"));
                     else if (obja instanceof Array) {
-                        JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
+                        // [Error] Compare
+                        JsonPathPairs.push(new JsonPathPair(path, objb.toString(), "number", "Deleted"));
+                        //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
                     }
                     else if (typeof obja === "object") {
                         JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
@@ -292,7 +294,9 @@ export class JsonPath {
                     if (typeof obja === "number") JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
                     else if (typeof obja === "string") JsonPathPairs.push(new JsonPathPair(path, obja, "string", "Modified"));
                     else if (obja instanceof Array) {
-                        JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
+                        // [Error] Compare 
+                        JsonPathPairs.push(new JsonPathPair(path, objb, "string", "Deleted"));
+                        //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
                     }
                     else if (typeof obja === "object") {
                         JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
@@ -309,7 +313,9 @@ export class JsonPath {
                     if (typeof obja === "number") JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
                     else if (typeof obja === "string") JsonPathPairs.push(new JsonPathPair(path, obja, "string", "Modified"));
                     else if (obja instanceof Array) {
-                        JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
+                        // [Error] Compare
+                        JsonPathPairs.push(new JsonPathPair(path, objb.toString(), "boolean", "Deleted"));
+                        //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
                     }
                     else if (typeof obja === "object") {
                         JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
@@ -346,6 +352,23 @@ export class JsonPath {
                         if (obja[i] != objb[i]) {
                             if (path != "") JsonPathPairs = this.checkaftbef(objb[i], obja[i], path + '[' + i + ']', JsonPathPairs);
                         }
+                    }
+                }
+            }
+            //[Error] Compare
+            else {
+                for (let i = 0; i < obja.length; ++i) {
+                    if (typeof obja[i] === "number") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "number", 'Added'));
+                    else if (typeof obja[i] === "string") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "string", "Added"));
+                    else if (obja[i] instanceof Array) {
+                        this.checkaftbef('', obja[i], path + '[' + i + ']', JsonPathPairs);
+                        //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "Array", 'Added'));
+                    }
+                    else if (typeof obja[i] === "boolean") {
+                        JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "boolean", 'Added'));
+                    }
+                    else if (typeof obja[i] === "object") {
+                        JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "object", "Added"));
                     }
                 }
             }

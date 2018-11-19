@@ -23,7 +23,7 @@ import * as jsonData21 from './json/example21.json';
 import * as jsonData22 from './json/example22.json';
 import * as jsonData23 from './json/example23.json';
 import * as jsonData24 from './json/example24.json';
-
+import * as jsonData26 from './json/example26.json';
 
 test('My Test', () => {
   const jsonPath = new JsonPath();
@@ -69,7 +69,7 @@ test('Array compare test', () => {
 test('Array compare test 2', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData21, jsonData22);
-  expect(result.length).toBe(7);
+  expect(result.length).toBe(9);
 
 });
 
@@ -88,6 +88,12 @@ test('Const diff', () => {
   expect(jsonPath.DIFF_ADDED).toBe("Added");
   expect(jsonPath.DIFF_DELETED).toBe("Deleted");
 
+});
+
+test('Compare', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData26, jsonData24);
+  expect(result.length).toBe(3);
 });
 
 
