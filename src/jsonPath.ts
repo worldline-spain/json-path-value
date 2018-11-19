@@ -225,7 +225,11 @@ export class JsonPath {
                 }
             }
             else {
-                if (typeof obja === "number") {
+                if (obja == '') {
+                    JsonPathPairs.push(new JsonPathPair(path, objb, "number", 'Deleted'));
+                }
+
+                else if (typeof obja === "number") {
                     JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
                 } else if (typeof obja === "string") {
                     JsonPathPairs.push(new JsonPathPair(path, obja, "string", 'Modified'));

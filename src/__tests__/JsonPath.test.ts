@@ -27,6 +27,8 @@ import * as jsonData25 from './json/example25.json';
 import * as jsonData26 from './json/example26.json';
 import * as jsonData27 from './json/example27.json';
 import * as jsonData28 from './json/example28.json';
+import * as jsonData29 from './json/example29.json';
+import * as jsonData30 from './json/example30.json';
 
 test('My Test', () => {
   const jsonPath = new JsonPath();
@@ -90,7 +92,6 @@ test('Array compare test', () => {
 test('Array compare test 2', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData21, jsonData22);
-  console.log(result);
   expect(result.length).toBe(10);
 
 });
@@ -107,10 +108,22 @@ test('Array compare test 4', () => {
   expect(result.length).toBe(6);
 });
 
+test('Array compare test 5', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData24, jsonData29);  
+  expect(result.length).toBe(1);
+});
+
+test('Array compare test 6', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData29, jsonData30);  
+  console.log(result);
+  expect(result.length).toBe(1);
+});
+
 test('Array & Object compare test', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData26, jsonData28);  
-  console.log(result);
   expect(result.length).toBe(6);
 });
 
