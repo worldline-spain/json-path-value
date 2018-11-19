@@ -17,31 +17,38 @@ export class JsonPathPair {
     public getDiff(diff: string) {
         return this.diff;
     }
+
 }
 
 export class JsonPath {
 
-
     public readonly DIFF_MODIFIED = "Modified";
     public readonly DIFF_ADDED = "Added";
     public readonly DIFF_DELETED = "Deleted";
+
+    public readonly TYPE_STRING = "string";
+    public readonly TYPE_NUMBER = "number";
+    public readonly TYPE_BOOLEAN = "boolean";
+    public readonly TYPE_OBJECT = "object";
+    public readonly TYPE_DATE = "Date";
+    public readonly TYPE_ARRAY = "Array";
 
     constructor() { }
 
     public marshall(obj: any, path: string, JsonPathPairs: JsonPathPair[]): JsonPathPair[] {
         if (obj instanceof Array) {
             for (let i = 0; i < obj.length; ++i) {
-                if (typeof obj[i] === "string") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), "string", ""));
-                else if (typeof obj[i] === "number") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), "number", ""));
-                else if (typeof obj[i] === "boolean") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), "boolean", ""));
-                else if (typeof obj[i] === "object") {
+                if (typeof obj[i] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_STRING, ""));
+                else if (typeof obj[i] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_NUMBER, ""));
+                else if (typeof obj[i] === this.TYPE_BOOLEAN) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_BOOLEAN, ""));
+                else if (typeof obj[i] === this.TYPE_OBJECT) {
                     JsonPathPairs = this.marshall(obj[i], path + '[' + i + ']', JsonPathPairs);
                 }
             }
         }
-        else if (typeof obj === "object") {
+        else if (typeof obj === this.TYPE_OBJECT) {
             if (obj instanceof Date) {
-                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), "Date", ""));
+                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_DATE, ""));
             }
             else {
                 for (let x in obj) {
@@ -54,14 +61,14 @@ export class JsonPath {
             }
         }
         else {
-            if (typeof obj === "number") {
-                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), "number", ""));
+            if (typeof obj === this.TYPE_NUMBER) {
+                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_NUMBER, ""));
             }
-            else if (typeof obj === "string") {
-                JsonPathPairs.push(new JsonPathPair(path, obj, "string", ""));
+            else if (typeof obj === this.TYPE_STRING) {
+                JsonPathPairs.push(new JsonPathPair(path, obj, this.TYPE_STRING, ""));
             }
-            else if (typeof obj === "boolean") {
-                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), "boolean", ""));
+            else if (typeof obj === this.TYPE_BOOLEAN) {
+                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_BOOLEAN, ""));
             }
         }
         return JsonPathPairs;
@@ -131,10 +138,10 @@ export class JsonPath {
             }
         }
         if (!attr && position == jsonpath.length - 1 && !json[jsonpath[position]]) {
-            if (JsonPathPairs[index_JsonPathPairs].getType() == "string" && JsonPathPairs[index_JsonPathPairs].getValue() != "") json[jsonpath[position]] = JsonPathPairs[index_JsonPathPairs].getValue();
-            else if (JsonPathPairs[index_JsonPathPairs].getType() == "number") json[jsonpath[position]] = parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10);
-            else if (JsonPathPairs[index_JsonPathPairs].getType() == "boolean") json[jsonpath[position]] = (JsonPathPairs[index_JsonPathPairs].getValue() == "true");
-            else if (JsonPathPairs[index_JsonPathPairs].getType() == "Date") json[jsonpath[position]] = new Date(JsonPathPairs[index_JsonPathPairs].getValue());
+            if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_STRING && JsonPathPairs[index_JsonPathPairs].getValue() != "") json[jsonpath[position]] = JsonPathPairs[index_JsonPathPairs].getValue();
+            else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_NUMBER) json[jsonpath[position]] = parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10);
+            else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_BOOLEAN) json[jsonpath[position]] = (JsonPathPairs[index_JsonPathPairs].getValue() == "true");
+            else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_DATE) json[jsonpath[position]] = new Date(JsonPathPairs[index_JsonPathPairs].getValue());
             else {
                 json[jsonpath[position]] = JsonPathPairs[index_JsonPathPairs].getValue();
             }
@@ -153,10 +160,10 @@ export class JsonPath {
                 json[attr[0]] = this.doArrayRecursivity(json[attr[0]], attr, 2, JsonPathPairs, index_JsonPathPairs);
 
             } else {
-                if (JsonPathPairs[index_JsonPathPairs].getType() == "string") json[attr[0]].push(JsonPathPairs[index_JsonPathPairs].getValue());
-                else if (JsonPathPairs[index_JsonPathPairs].getType() == "number") json[attr[0]].push(parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10));
-                else if (JsonPathPairs[index_JsonPathPairs].getType() == "boolean") json[attr[0]].push((JsonPathPairs[index_JsonPathPairs].getValue() == "true"));
-                else if (JsonPathPairs[index_JsonPathPairs].getType() == "Date") json[attr[0]].push(new Date(JsonPathPairs[index_JsonPathPairs].getValue()));
+                if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_STRING) json[attr[0]].push(JsonPathPairs[index_JsonPathPairs].getValue());
+                else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_NUMBER) json[attr[0]].push(parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10));
+                else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_BOOLEAN) json[attr[0]].push((JsonPathPairs[index_JsonPathPairs].getValue() == "true"));
+                else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_DATE) json[attr[0]].push(new Date(JsonPathPairs[index_JsonPathPairs].getValue()));
                 else {
                     json[attr[0]].push(JsonPathPairs[index_JsonPathPairs].getValue());
                 }
@@ -173,10 +180,10 @@ export class JsonPath {
                 json[attr[0]] = this.doArrayRecursivity(json[attr[0]], attr, 2, JsonPathPairs, index_JsonPathPairs);
             }
             else {
-                if (JsonPathPairs[index_JsonPathPairs].getType() == "string") json[attr[0]].push(JsonPathPairs[index_JsonPathPairs].getValue());
-                else if (JsonPathPairs[index_JsonPathPairs].getType() == "number") json[attr[0]].push(parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10));
-                else if (JsonPathPairs[index_JsonPathPairs].getType() == "boolean") json[attr[0]].push((JsonPathPairs[index_JsonPathPairs].getValue() == "true"));
-                else if (JsonPathPairs[index_JsonPathPairs].getType() == "Date") json[attr[0]].push(new Date(JsonPathPairs[index_JsonPathPairs].getValue()));
+                if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_STRING) json[attr[0]].push(JsonPathPairs[index_JsonPathPairs].getValue());
+                else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_NUMBER) json[attr[0]].push(parseInt(JsonPathPairs[index_JsonPathPairs].getValue(), 10));
+                else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_BOOLEAN) json[attr[0]].push((JsonPathPairs[index_JsonPathPairs].getValue() == "true"));
+                else if (JsonPathPairs[index_JsonPathPairs].getType() == this.TYPE_DATE) json[attr[0]].push(new Date(JsonPathPairs[index_JsonPathPairs].getValue()));
             }
         }
         else if (attr && position != jsonpath.length - 1 && json[attr[0]] && !json[attr[0]][attr[1]]) {
@@ -209,51 +216,51 @@ export class JsonPath {
                 for (let i = 0; i < objb.length; ++i) {
                     if (i < obja.length) JsonPathPairs = this.checkbefaft(objb[i], obja[i], path + '[' + i + ']', JsonPathPairs);
                     else {
-                        if (typeof objb[i] === "number") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i].toString(), "number", 'Deleted'));
-                        else if (typeof objb[i] === "string") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], "string", "Deleted"));
+                        if (typeof objb[i] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i].toString(), this.TYPE_NUMBER, this.DIFF_DELETED));
+                        else if (typeof objb[i] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], this.TYPE_STRING, this.DIFF_DELETED));
                         else if (objb[i] instanceof Array) {
                             // [Error] Compare
                             //this.checkbefaft(objb[i])
-                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], "Array", "Deleted"));
+                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], this.TYPE_ARRAY, this.DIFF_DELETED));
                         }
-                        else if (typeof objb[i] === "object") {
-                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], "Object", "Deleted"));
-                        } else if (typeof obja === "boolean") {
-                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i].toString(), "boolean", 'Deleted'));
+                        else if (typeof objb[i] === this.TYPE_OBJECT) {
+                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i], this.TYPE_OBJECT, this.DIFF_DELETED));
+                        } else if (typeof obja === this.TYPE_BOOLEAN) {
+                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', objb[i].toString(), this.TYPE_BOOLEAN, this.DIFF_DELETED));
                         }
                     }
                 }
             }
             else {
                 if (obja == '') {
-                    JsonPathPairs.push(new JsonPathPair(path, objb, "number", 'Deleted'));
+                    JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_NUMBER, this.DIFF_DELETED));
                 }
 
-                else if (typeof obja === "number") {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
-                } else if (typeof obja === "string") {
-                    JsonPathPairs.push(new JsonPathPair(path, obja, "string", 'Modified'));
-                } else if (typeof obja === "boolean") {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
-                } else if (typeof obja === "object") {
-                    JsonPathPairs.push(new JsonPathPair(path, obja, "object", 'Modified'));
+                else if (typeof obja === this.TYPE_NUMBER) {
+                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_MODIFIED));
+                } else if (typeof obja === this.TYPE_STRING) {
+                    JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_MODIFIED));
+                } else if (typeof obja === this.TYPE_BOOLEAN) {
+                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
+                } else if (typeof obja === this.TYPE_OBJECT) {
+                    JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_MODIFIED));
                 }
             }
         }
-        else if (typeof objb === "object") {
+        else if (typeof objb === this.TYPE_OBJECT) {
             if (objb instanceof Date) {
                 if (!obja) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "Date", 'Deleted'));
+                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_DATE, this.DIFF_DELETED));
                 } else {
                     if (objb != obja) {
-                        if (typeof obja === "number") {
-                            JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
-                        } else if (typeof obja === "string") {
-                            JsonPathPairs.push(new JsonPathPair(path, obja, "string", 'Modified'));
-                        } else if (typeof obja === "boolean") {
-                            JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
-                        } else if (typeof obja === "object") {
-                            JsonPathPairs.push(new JsonPathPair(path, obja, "object", 'Modified'));
+                        if (typeof obja === this.TYPE_NUMBER) {
+                            JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_MODIFIED));
+                        } else if (typeof obja === this.TYPE_STRING) {
+                            JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_MODIFIED));
+                        } else if (typeof obja === this.TYPE_BOOLEAN) {
+                            JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
+                        } else if (typeof obja === this.TYPE_OBJECT) {
+                            JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_MODIFIED));
                         }
                     }
                 }
@@ -276,67 +283,67 @@ export class JsonPath {
             }
         }
         else {
-            if (typeof objb === "number") {
+            if (typeof objb === this.TYPE_NUMBER) {
                 if (obja && objb != obja) {
-                    if (typeof obja === "number") JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
-                    else if (typeof obja === "string") JsonPathPairs.push(new JsonPathPair(path, obja, "string", "Modified"));
+                    if (typeof obja === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_MODIFIED));
+                    else if (typeof obja === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_MODIFIED));
                     else if (obja instanceof Array) {
                         // [Error] Compare
-                        JsonPathPairs.push(new JsonPathPair(path, objb.toString(), "number", "Deleted"));
-                        //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
+                        JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_NUMBER, this.DIFF_DELETED));
+                        //JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_ARRAY, this.DIFF_MODIFIED));
                     }
-                    else if (typeof obja === "object") {
+                    else if (typeof obja === this.TYPE_OBJECT) {
                         // [Error] Compare
-                        JsonPathPairs.push(new JsonPathPair(path, objb, "number", "Deleted"));
-                        // JsonPathPairs.push(new JsonPathPair(path, objb, "object", "Modified"));
-                    } else if (typeof obja === "boolean") {
-                        JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
+                        JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_NUMBER, this.DIFF_DELETED));
+                        // JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_OBJECT, this.DIFF_MODIFIED));
+                    } else if (typeof obja === this.TYPE_BOOLEAN) {
+                        JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
                 else if (!obja) {
-                    JsonPathPairs.push(new JsonPathPair(path, objb.toString(), "number", 'Deleted'));
+                    JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_NUMBER, this.DIFF_DELETED));
                 }
             }
-            else if (typeof objb === "string") {
+            else if (typeof objb === this.TYPE_STRING) {
                 if (obja && objb != obja) {
-                    if (typeof obja === "number") JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
-                    else if (typeof obja === "string") JsonPathPairs.push(new JsonPathPair(path, obja, "string", "Modified"));
+                    if (typeof obja === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_MODIFIED));
+                    else if (typeof obja === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_MODIFIED));
                     else if (obja instanceof Array) {
                         // [Error] Compare 
-                        JsonPathPairs.push(new JsonPathPair(path, objb, "string", "Deleted"));
-                        //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
+                        JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_STRING, this.DIFF_DELETED));
+                        //JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_ARRAY, this.DIFF_MODIFIED));
                     }
-                    else if (typeof obja === "object") {
+                    else if (typeof obja === this.TYPE_OBJECT) {
                         // [Error] Compare
-                        JsonPathPairs.push(new JsonPathPair(path, objb, "string", "Deleted"));
-                        // JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
-                    } else if (typeof obja === "boolean") {
-                        JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
+                        JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_STRING, this.DIFF_DELETED));
+                        // JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_MODIFIED));
+                    } else if (typeof obja === this.TYPE_BOOLEAN) {
+                        JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
                 else if (!obja) {
-                    JsonPathPairs.push(new JsonPathPair(path, objb, "string", 'Deleted'));
+                    JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_STRING, this.DIFF_DELETED));
                 }
             }
-            else if (typeof objb === "boolean") {
+            else if (typeof objb === this.TYPE_BOOLEAN) {
                 if (obja && objb != obja) {
-                    if (typeof obja === "number") JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Modified'));
-                    else if (typeof obja === "string") JsonPathPairs.push(new JsonPathPair(path, obja, "string", "Modified"));
+                    if (typeof obja === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_MODIFIED));
+                    else if (typeof obja === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_MODIFIED));
                     else if (obja instanceof Array) {
                         // [Error] Compare
-                        JsonPathPairs.push(new JsonPathPair(path, objb.toString(), "boolean", "Deleted"));
-                        //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
+                        JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_BOOLEAN, this.DIFF_DELETED));
+                        //JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_ARRAY, this.DIFF_MODIFIED));
                     }
-                    else if (typeof obja === "object") {
+                    else if (typeof obja === this.TYPE_OBJECT) {
                         // [Error] Compare
-                        JsonPathPairs.push(new JsonPathPair(path, objb, "boolean", "Deleted"));
-                        // JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
-                    } else if (typeof obja === "boolean") {
-                        JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
+                        JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_BOOLEAN, this.DIFF_DELETED));
+                        // JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_MODIFIED));
+                    } else if (typeof obja === this.TYPE_BOOLEAN) {
+                        JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
                 else if (!obja) {
-                    JsonPathPairs.push(new JsonPathPair(path, objb.toString(), "boolean", 'Deleted'));
+                    JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_BOOLEAN, this.DIFF_DELETED));
                 }
             }
         }
@@ -348,16 +355,16 @@ export class JsonPath {
             if (objb instanceof Array) {
                 for (let i = 0; i < obja.length; ++i) {
                     if (i >= objb.length) {
-                        if (typeof obja[i] === "number") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "number", 'Added'));
-                        else if (typeof obja[i] === "string") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "string", "Added"));
+                        if (typeof obja[i] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), this.TYPE_NUMBER, this.DIFF_ADDED));
+                        else if (typeof obja[i] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_STRING, this.DIFF_ADDED));
                         else if (obja[i] instanceof Array) {
-                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "Array", 'Added'));
+                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_ARRAY, this.DIFF_ADDED));
                         }
-                        else if (typeof obja[i] === "boolean") {
-                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "boolean", 'Added'));
+                        else if (typeof obja[i] === this.TYPE_BOOLEAN) {
+                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), this.TYPE_BOOLEAN, this.DIFF_ADDED));
                         }
-                        else if (typeof obja[i] === "object") {
-                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "object", "Added"));
+                        else if (typeof obja[i] === this.TYPE_OBJECT) {
+                            JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_OBJECT, this.DIFF_ADDED));
                         }
                     }
                     else {
@@ -370,29 +377,29 @@ export class JsonPath {
             //[Error] Compare
             else {
                 for (let i = 0; i < obja.length; ++i) {
-                    if (typeof obja[i] === "number") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "number", 'Added'));
-                    else if (typeof obja[i] === "string") JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "string", "Added"));
+                    if (typeof obja[i] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), this.TYPE_NUMBER, this.DIFF_ADDED));
+                    else if (typeof obja[i] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_STRING, this.DIFF_ADDED));
                     else if (obja[i] instanceof Array) {
                         this.checkaftbef('', obja[i], path + '[' + i + ']', JsonPathPairs);
-                        //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "Array", 'Added'));
+                        //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_ARRAY, this.DIFF_ADDED));
                     }
-                    else if (typeof obja[i] === "boolean") {
-                        JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "boolean", 'Added'));
+                    else if (typeof obja[i] === this.TYPE_BOOLEAN) {
+                        JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), this.TYPE_BOOLEAN, this.DIFF_ADDED));
                     }
-                    else if (typeof obja[i] === "object") {
+                    else if (typeof obja[i] === this.TYPE_OBJECT) {
                         this.checkaftbef('', obja[i], path + '[' + i + ']', JsonPathPairs);
                     }
                 }
             }
         }
-        else if (typeof obja === "object") {
+        else if (typeof obja === this.TYPE_OBJECT) {
             if (obja instanceof Date) {
                 if (!objb) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "Date", 'Added'));
+                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_DATE, this.DIFF_ADDED));
                 }
             }
             else {
-                if (typeof objb === "object") {
+                if (typeof objb === this.TYPE_OBJECT) {
                     for (let x in obja) {
                         if (!objb[x]) {
                             if (path != "") {
@@ -415,45 +422,45 @@ export class JsonPath {
                 // [Error] Compare
                 else {
                     for (let x in obja) {
-                        if (typeof obja[x] === "number") JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x].toString(), "number", 'Added'));
-                        else if (typeof obja[x] === "string") JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x], "string", "Added"));
+                        if (typeof obja[x] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x].toString(), this.TYPE_NUMBER, this.DIFF_ADDED));
+                        else if (typeof obja[x] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x], this.TYPE_STRING, this.DIFF_ADDED));
                         else if (obja[x] instanceof Array) {
                             this.checkaftbef("", obja[x], path + '.' + x, JsonPathPairs);
                             //this.checkaftbef('', obja[i], path + '[' + i + ']', JsonPathPairs);
-                            //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "Array", 'Added'));
+                            //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_ARRAY, this.DIFF_ADDED));
                         }
-                        else if (typeof obja[x] === "boolean") {
-                            JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x].toString(), "boolean", 'Added'));
+                        else if (typeof obja[x] === this.TYPE_BOOLEAN) {
+                            JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x].toString(), this.TYPE_BOOLEAN, this.DIFF_ADDED));
                         }
-                        else if (typeof obja[x] === "object") {
+                        else if (typeof obja[x] === this.TYPE_OBJECT) {
                             this.checkaftbef("", obja[x], path + '.' + x, JsonPathPairs);
-                            //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "object", "Added"));
+                            //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], this.TYPE_OBJECT, this.DIFF_ADDED));
                         }
                     }
                 }
             }
         }
         else {
-            if (typeof obja === "number") {
+            if (typeof obja === this.TYPE_NUMBER) {
                 if (!objb) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "number", 'Added'));
+                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_ADDED));
                 }
             }
-            else if (typeof obja === "string") {
+            else if (typeof obja === this.TYPE_STRING) {
                 if (!objb) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja, "string", 'Added'));
+                    JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_ADDED));
                 }
             }
-            else if (typeof obja === "boolean") {
+            else if (typeof obja === this.TYPE_BOOLEAN) {
                 if (!objb) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Added'));
+                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_ADDED));
                 }
             }
             else if (obja instanceof Array) {
-                JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Added"));
+                JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_ARRAY, this.DIFF_ADDED));
             }
-            else if (typeof obja === "object") {
-                JsonPathPairs.push(new JsonPathPair(path, obja, "Object", "Added"));
+            else if (typeof obja === this.TYPE_OBJECT) {
+                JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_ADDED));
             }
         }
 
