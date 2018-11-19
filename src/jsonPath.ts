@@ -282,7 +282,9 @@ export class JsonPath {
                         //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
                     }
                     else if (typeof obja === "object") {
-                        JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
+                        // [Error] Compare
+                        JsonPathPairs.push(new JsonPathPair(path, objb, "number", "Deleted"));
+                        // JsonPathPairs.push(new JsonPathPair(path, objb, "object", "Modified"));
                     } else if (typeof obja === "boolean") {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
                     }
@@ -301,7 +303,9 @@ export class JsonPath {
                         //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
                     }
                     else if (typeof obja === "object") {
-                        JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
+                        // [Error] Compare
+                        JsonPathPairs.push(new JsonPathPair(path, objb, "string", "Deleted"));
+                        // JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
                     } else if (typeof obja === "boolean") {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
                     }
@@ -320,7 +324,9 @@ export class JsonPath {
                         //JsonPathPairs.push(new JsonPathPair(path, obja, "Array", "Modified"));
                     }
                     else if (typeof obja === "object") {
-                        JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
+                        // [Error] Compare
+                        JsonPathPairs.push(new JsonPathPair(path, objb, "boolean", "Deleted"));
+                        // JsonPathPairs.push(new JsonPathPair(path, obja, "object", "Modified"));
                     } else if (typeof obja === "boolean") {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), "boolean", 'Modified'));
                     }
@@ -370,7 +376,7 @@ export class JsonPath {
                         JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i].toString(), "boolean", 'Added'));
                     }
                     else if (typeof obja[i] === "object") {
-                        JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "object", "Added"));
+                        this.checkaftbef('', obja[i], path + '[' + i + ']', JsonPathPairs);
                     }
                 }
             }
@@ -399,6 +405,25 @@ export class JsonPath {
                             else {
                                 JsonPathPairs = this.checkaftbef(objb[x], obja[x], x, JsonPathPairs);
                             }
+                        }
+                    }
+                }
+                // [Error] Compare
+                else {
+                    for (let x in obja) {
+                        if (typeof obja[x] === "number") JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x].toString(), "number", 'Added'));
+                        else if (typeof obja[x] === "string") JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x], "string", "Added"));
+                        else if (obja[x] instanceof Array) {
+                            this.checkaftbef("", obja[x], path + '.' + x, JsonPathPairs);
+                            //this.checkaftbef('', obja[i], path + '[' + i + ']', JsonPathPairs);
+                            //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "Array", 'Added'));
+                        }
+                        else if (typeof obja[x] === "boolean") {
+                            JsonPathPairs.push(new JsonPathPair(path + '.' + x, obja[x].toString(), "boolean", 'Added'));
+                        }
+                        else if (typeof obja[x] === "object") {
+                            this.checkaftbef("", obja[x], path + '.' + x, JsonPathPairs);
+                            //JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obja[i], "object", "Added"));
                         }
                     }
                 }

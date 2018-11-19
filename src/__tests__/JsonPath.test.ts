@@ -25,6 +25,8 @@ import * as jsonData23 from './json/example23.json';
 import * as jsonData24 from './json/example24.json';
 import * as jsonData25 from './json/example25.json';
 import * as jsonData26 from './json/example26.json';
+import * as jsonData27 from './json/example27.json';
+import * as jsonData28 from './json/example28.json';
 
 test('My Test', () => {
   const jsonPath = new JsonPath();
@@ -88,8 +90,28 @@ test('Array compare test', () => {
 test('Array compare test 2', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData21, jsonData22);
-  expect(result.length).toBe(9);
+  console.log(result);
+  expect(result.length).toBe(10);
 
+});
+
+test('Array compare test 3', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData26, jsonData24);
+  expect(result.length).toBe(3);
+});
+
+test('Array compare test 4', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData26, jsonData27);  
+  expect(result.length).toBe(6);
+});
+
+test('Array & Object compare test', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData26, jsonData28);  
+  console.log(result);
+  expect(result.length).toBe(6);
 });
 
 test('Array unMarshall', () => {
@@ -107,12 +129,6 @@ test('Const diff', () => {
   expect(jsonPath.DIFF_ADDED).toBe("Added");
   expect(jsonPath.DIFF_DELETED).toBe("Deleted");
 
-});
-
-test('Compare', () => {
-  const jsonPath = new JsonPath();
-  const result = jsonPath.compareJsonPath(jsonData26, jsonData24);
-  expect(result.length).toBe(3);
 });
 
 

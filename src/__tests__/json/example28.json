@@ -1,0 +1,15 @@
+{
+    "tittle": "Interstellar",
+    "director": "Christopher Nolan",
+    "cast": {
+        "b": "Bill Irwin",
+        "e": [
+            "Ellen Burstyn",
+            "Jessica Chastain"
+        ],
+        "m": {
+            "m": "Mathew McConaughey",
+            "a": "Anne Hathaway"
+        }
+    }
+}
