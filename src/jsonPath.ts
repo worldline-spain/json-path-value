@@ -70,8 +70,10 @@ export class JsonPath {
     public unMarshall(JsonPathPairs: JsonPathPair[]): any {
         let json = {};
         for (let i = 0; i < JsonPathPairs.length; ++i) {
-            var splitted = (JsonPathPairs[i].getPath()).split('.');
-            json = this.doJsonRecursivity(splitted, json, 0, i, JsonPathPairs);
+            if (JsonPathPairs[i].getPath() != '') {
+                var splitted = (JsonPathPairs[i].getPath()).split('.');
+                json = this.doJsonRecursivity(splitted, json, 0, i, JsonPathPairs);
+            }
         }
         return json;
     }

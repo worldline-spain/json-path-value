@@ -23,6 +23,7 @@ import * as jsonData21 from './json/example21.json';
 import * as jsonData22 from './json/example22.json';
 import * as jsonData23 from './json/example23.json';
 import * as jsonData24 from './json/example24.json';
+import * as jsonData25 from './json/example25.json';
 
 
 test('My Test', () => {
@@ -34,7 +35,7 @@ test('My Test', () => {
 
 });
 
-test('Empty path test', () => {
+test('Empty path test from json', () => {
   const jsonPath = new JsonPath();
   const marshalledObject = jsonPath.marshall(jsonData2, "", []);
   const unMarshalledObject = jsonPath.unMarshall(marshalledObject);
@@ -43,10 +44,28 @@ test('Empty path test', () => {
 
 });
 
+test('Empty path test to json', () => {
+  const jsonPath = new JsonPath();
+  const marshalledObject = [];
+  marshalledObject.push(new JsonPathPair('', '', '', ''));
+  marshalledObject.push(new JsonPathPair('a', 'a', 'string', ''));
+  const unMarshalledObject = jsonPath.unMarshall(marshalledObject);
+  const result = jsonPath.compareJsonPath(jsonData25, unMarshalledObject);
+  expect(result.length).toBe(0);
+
+});
+
 test('Compare test', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData1, jsonData4);
   expect(result.length).toBe(5);
+
+});
+
+test('Compare test 2', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData2, jsonData25);
+  expect(result.length).toBe(1);
 
 });
 
