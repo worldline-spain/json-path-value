@@ -114,13 +114,12 @@ test('Array compare test 5', () => {
   expect(result.length).toBe(3);
 });
 
-// Array deletion fails
-// test('Array compare test 6', () => {
-//   const jsonPath = new JsonPath();
-//   const result = jsonPath.compareJsonPath(jsonData29, jsonData30);  
-//   console.log(result);
-//   expect(result.length).toBe(7);
-// });
+test('Array compare test 6', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData29, jsonData30);  
+  console.log(result);
+  expect(result.length).toBe(7);
+});
 
 test('Array & Object compare test', () => {
   const jsonPath = new JsonPath();
