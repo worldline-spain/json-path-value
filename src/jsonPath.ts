@@ -38,9 +38,9 @@ export class JsonPath {
     public marshall(obj: any, path: string, JsonPathPairs: JsonPathPair[]): JsonPathPair[] {
         if (obj instanceof Array) {
             for (let i = 0; i < obj.length; ++i) {
-                if (typeof obj[i] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_STRING, ""));
-                else if (typeof obj[i] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_NUMBER, ""));
-                else if (typeof obj[i] === this.TYPE_BOOLEAN) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_BOOLEAN, ""));
+                if (typeof obj[i] === this.TYPE_STRING) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_STRING, -1));
+                else if (typeof obj[i] === this.TYPE_NUMBER) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_NUMBER, -1));
+                else if (typeof obj[i] === this.TYPE_BOOLEAN) JsonPathPairs.push(new JsonPathPair(path + '[' + i + ']', obj[i].toString(), this.TYPE_BOOLEAN, -1));
                 else if (typeof obj[i] === this.TYPE_OBJECT) {
                     JsonPathPairs = this.marshall(obj[i], path + '[' + i + ']', JsonPathPairs);
                 }
@@ -48,7 +48,7 @@ export class JsonPath {
         }
         else if (typeof obj === this.TYPE_OBJECT) {
             if (obj instanceof Date) {
-                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_DATE, ""));
+                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_DATE, -1));
             }
             else {
                 for (let x in obj) {
@@ -62,13 +62,13 @@ export class JsonPath {
         }
         else {
             if (typeof obj === this.TYPE_NUMBER) {
-                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_NUMBER, ""));
+                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_NUMBER, -1));
             }
             else if (typeof obj === this.TYPE_STRING) {
-                JsonPathPairs.push(new JsonPathPair(path, obj, this.TYPE_STRING, ""));
+                JsonPathPairs.push(new JsonPathPair(path, obj, this.TYPE_STRING, -1));
             }
             else if (typeof obj === this.TYPE_BOOLEAN) {
-                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_BOOLEAN, ""));
+                JsonPathPairs.push(new JsonPathPair(path, obj.toString(), this.TYPE_BOOLEAN, -1));
             }
         }
         return JsonPathPairs;
@@ -284,7 +284,7 @@ export class JsonPath {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
-                else if (!obja || obja == '' ) {
+                else if (!obja || obja == '') {
                     JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_NUMBER, this.DIFF_DELETED));
                 }
             }
@@ -430,7 +430,5 @@ export class JsonPath {
 
         return JsonPathPairs;
     }
-
-
 
 }

@@ -51,8 +51,8 @@ test('Empty path test from json', () => {
 test('Empty path test to json', () => {
   const jsonPath = new JsonPath();
   const marshalledObject = [];
-  marshalledObject.push(new JsonPathPair('', '', '', ''));
-  marshalledObject.push(new JsonPathPair('a', 'a', 'string', ''));
+  marshalledObject.push(new JsonPathPair('', '', '', -1));
+  marshalledObject.push(new JsonPathPair('a', 'a', 'string', -1));
   const unMarshalledObject = jsonPath.unMarshall(marshalledObject);
   const result = jsonPath.compareJsonPath(jsonData25, unMarshalledObject);
   expect(result.length).toBe(0);
@@ -104,32 +104,31 @@ test('Array compare test 3', () => {
 
 test('Array compare test 4', () => {
   const jsonPath = new JsonPath();
-  const result = jsonPath.compareJsonPath(jsonData26, jsonData27);  
+  const result = jsonPath.compareJsonPath(jsonData26, jsonData27);
   expect(result.length).toBe(6);
 });
 
 test('Array compare test 5', () => {
   const jsonPath = new JsonPath();
-  const result = jsonPath.compareJsonPath(jsonData24, jsonData29);  
+  const result = jsonPath.compareJsonPath(jsonData24, jsonData29);
   expect(result.length).toBe(3);
 });
 
 test('Array compare test 6', () => {
   const jsonPath = new JsonPath();
-  const result = jsonPath.compareJsonPath(jsonData29, jsonData30);  
+  const result = jsonPath.compareJsonPath(jsonData29, jsonData30);
   expect(result.length).toBe(9);
 });
 
 test('Array compare test 7', () => {
   const jsonPath = new JsonPath();
-  const result = jsonPath.compareJsonPath(jsonData24, jsonData26);  
+  const result = jsonPath.compareJsonPath(jsonData24, jsonData26);
   expect(result.length).toBe(3);
 });
 
 test('Array & Object compare test', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData26, jsonData28);
-  console.log(result); 
   expect(result.length).toBe(6);
 });
 
