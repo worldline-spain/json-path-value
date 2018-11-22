@@ -1,6 +1,6 @@
 export class JsonPathPair {
 
-    public constructor(private path: string, private value: any, private type: string, private diff: string) { }
+    public constructor(private path: string, private value: any, private type: string, private diff: number) { }
 
     public getPath(): string {
         return this.path;
@@ -14,7 +14,7 @@ export class JsonPathPair {
         return this.type;
     }
 
-    public getDiff(diff: string) {
+    public getDiff(diff: number) {
         return this.diff;
     }
 
