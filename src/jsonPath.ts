@@ -22,9 +22,9 @@ export class JsonPathPair {
 
 export class JsonPath {
 
-    public readonly DIFF_MODIFIED = "Modified";
-    public readonly DIFF_ADDED = "Added";
-    public readonly DIFF_DELETED = "Deleted";
+    public readonly DIFF_MODIFIED = 2;
+    public readonly DIFF_ADDED = 0;
+    public readonly DIFF_DELETED = 1;
 
     public readonly TYPE_STRING = "string";
     public readonly TYPE_NUMBER = "number";
@@ -230,18 +230,8 @@ export class JsonPath {
                 }
             }
             else {
-                if (obja == '') {
-                    JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_NUMBER, this.DIFF_DELETED));
-                }
-
-                else if (typeof obja === this.TYPE_NUMBER) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_MODIFIED));
-                } else if (typeof obja === this.TYPE_STRING) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_MODIFIED));
-                } else if (typeof obja === this.TYPE_BOOLEAN) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
-                } else if (typeof obja === this.TYPE_OBJECT) {
-                    JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_MODIFIED));
+                for (let i = 0; i < objb.length; ++i) {
+                    this.checkbefaft(objb[i], '', path + '[' + i + ']', JsonPathPairs);
                 }
             }
         }
@@ -294,7 +284,7 @@ export class JsonPath {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
-                else if (!obja) {
+                else if (!obja || obja == '' ) {
                     JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_NUMBER, this.DIFF_DELETED));
                 }
             }
@@ -311,7 +301,7 @@ export class JsonPath {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
-                else if (!obja) {
+                else if (!obja || obja == '') {
                     JsonPathPairs.push(new JsonPathPair(path, objb, this.TYPE_STRING, this.DIFF_DELETED));
                 }
             }
@@ -328,7 +318,7 @@ export class JsonPath {
                         JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_MODIFIED));
                     }
                 }
-                else if (!obja) {
+                else if (!obja || obja == '') {
                     JsonPathPairs.push(new JsonPathPair(path, objb.toString(), this.TYPE_BOOLEAN, this.DIFF_DELETED));
                 }
             }
@@ -422,25 +412,19 @@ export class JsonPath {
         }
         else {
             if (typeof obja === this.TYPE_NUMBER) {
-                if (!objb) {
+                if (!objb || objb instanceof Array) {
                     JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_NUMBER, this.DIFF_ADDED));
                 }
             }
             else if (typeof obja === this.TYPE_STRING) {
-                if (!objb) {
+                if (!objb || objb instanceof Array) {
                     JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_STRING, this.DIFF_ADDED));
                 }
             }
             else if (typeof obja === this.TYPE_BOOLEAN) {
-                if (!objb) {
+                if (!objb || objb instanceof Array) {
                     JsonPathPairs.push(new JsonPathPair(path, obja.toString(), this.TYPE_BOOLEAN, this.DIFF_ADDED));
                 }
-            }
-            else if (obja instanceof Array) {
-                JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_ARRAY, this.DIFF_ADDED));
-            }
-            else if (typeof obja === this.TYPE_OBJECT) {
-                JsonPathPairs.push(new JsonPathPair(path, obja, this.TYPE_OBJECT, this.DIFF_ADDED));
             }
         }
 

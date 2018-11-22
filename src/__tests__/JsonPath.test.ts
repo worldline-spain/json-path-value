@@ -92,7 +92,7 @@ test('Array compare test', () => {
 test('Array compare test 2', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData21, jsonData22);
-  expect(result.length).toBe(10);
+  expect(result.length).toBe(13);
 
 });
 
@@ -117,13 +117,19 @@ test('Array compare test 5', () => {
 test('Array compare test 6', () => {
   const jsonPath = new JsonPath();
   const result = jsonPath.compareJsonPath(jsonData29, jsonData30);  
-  console.log(result);
-  expect(result.length).toBe(7);
+  expect(result.length).toBe(9);
+});
+
+test('Array compare test 7', () => {
+  const jsonPath = new JsonPath();
+  const result = jsonPath.compareJsonPath(jsonData24, jsonData26);  
+  expect(result.length).toBe(3);
 });
 
 test('Array & Object compare test', () => {
   const jsonPath = new JsonPath();
-  const result = jsonPath.compareJsonPath(jsonData26, jsonData28);  
+  const result = jsonPath.compareJsonPath(jsonData26, jsonData28);
+  console.log(result); 
   expect(result.length).toBe(6);
 });
 
@@ -138,8 +144,8 @@ test('Array unMarshall', () => {
 
 test('Const diff', () => {
   const jsonPath = new JsonPath();
-  expect(jsonPath.DIFF_MODIFIED).toBe("Modified");
-  expect(jsonPath.DIFF_ADDED).toBe("Added");
-  expect(jsonPath.DIFF_DELETED).toBe("Deleted");
+  expect(jsonPath.DIFF_MODIFIED).toBe(2);
+  expect(jsonPath.DIFF_ADDED).toBe(0);
+  expect(jsonPath.DIFF_DELETED).toBe(1);
 
 });
